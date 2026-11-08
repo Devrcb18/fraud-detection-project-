@@ -1,0 +1,10 @@
+data_ingestion:
+  test_size: 0.20
+  file_path : r'C:\Users\devan\OneDrive\Documents\Clickbait classification\clickbait_title_classification.csv'
+
+feature_engineering:
+  max_features: 35
+
+model_building:
+  n_estimators: 22
+  random_state: 2
