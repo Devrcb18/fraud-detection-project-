@@ -11,3 +11,5 @@ model_building:
   learning_rate_upper_limit : 3e-2
   learning_rate_lower_limit : 3e-4
   num_estimator_choices : [3,5,7,10]
+  eval_metric : 'logloss'
+  random_state : 42
