@@ -1,0 +1,59 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python src/data/ingestion.py
+    deps:
+    - path: data_files/raw/clickbait_title_classification.csv
+      hash: md5
+      md5: ad8aed0d0333668ab9e933d1c0ad0915
+      size: 1835662
+    - path: params.yaml
+      hash: md5
+      md5: ec718d7f7822fd274030a6dc8476ea1d
+      size: 382
+    - path: src/data/ingestion.py
+      hash: md5
+      md5: bcfd7e662916a98818a9eb189049874f
+      size: 4548
+    outs:
+    - path: data_files/processed/x_test.npz
+      hash: md5
+      md5: 744f85216821dbd3a3212741ec7eb6f5
+      size: 458970
+    - path: data_files/processed/x_train.npz
+      hash: md5
+      md5: 4049112f0f9d9cae33cb1f2f9b2aae96
+      size: 1876062
+    - path: data_files/processed/y_test.npy
+      hash: md5
+      md5: 6e6cc9cd3f039e880232366d8b82a597
+      size: 51328
+    - path: data_files/processed/y_train.npy
+      hash: md5
+      md5: 5a1ec40313bf097e2166d0efea6703e4
+      size: 204928
+    - path: models/tfidf_vectorizer.joblib
+      hash: md5
+      md5: 447ee9ca99c9d295e82afd6b6245a857
+      size: 181808
+  model_building:
+    cmd: python src/models/model_building.py
+    deps:
+    - path: data_files/processed
+      hash: md5
+      md5: be3b144d98066e86ec502aed7375f31f.dir
+      size: 2591342
+      nfiles: 5
+    - path: params.yaml
+      hash: md5
+      md5: ec718d7f7822fd274030a6dc8476ea1d
+      size: 382
+    - path: src/models/model_building.py
+      hash: md5
+      md5: c501837b64f3f6e15f7d3e754aa89c87
+      size: 6080
+    outs:
+    - path: models/clickbait_xgb.joblib
+      hash: md5
+      md5: aebaf3033f718ef1c8c0ff7157a5dca6
+      size: 55786

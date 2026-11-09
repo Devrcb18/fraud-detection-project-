@@ -1,6 +1,6 @@
 data_ingestion:
   test_size: 0.20
-  file_path : 'data_files\raw\clickbait_title_classification.csv'
+  file_path : data_files\raw\clickbait_title_classification.csv
 
 feature_engineering:
   max_features: 5000
@@ -8,8 +8,8 @@ feature_engineering:
 model_building:
   max_depth_upper_limit : 10
   max_depth_lower_limit : 3
-  learning_rate_upper_limit : 3e-2
-  learning_rate_lower_limit : 3e-4
+  learning_rate_upper_limit : 0.3
+  learning_rate_lower_limit : 0.0003
   num_estimator_choices : [3,5,7,10]
   eval_metric : 'logloss'
   random_state : 42

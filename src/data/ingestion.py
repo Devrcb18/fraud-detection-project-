@@ -6,6 +6,7 @@ import yaml
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 import joblib
+from scipy.sparse import save_npz
 
 # -------------------------logging information ------------------------
 log_dir = 'logs'
@@ -40,7 +41,7 @@ def data_entry(data_path:str) -> pd.DataFrame:
 def find_param(param_path:str)->dict:
     try:
         with open(param_path,'r') as f:
-            params = yaml.load(f)
+            params = yaml.safe_load(f)
             logger.debug('Parameters loaded from %s', param_path)
             return params
     except FileNotFoundError:
@@ -68,36 +69,32 @@ def preprocess_data(x_train:pd.DataFrame,x_test:pd.DataFrame):
         params = find_param('params.yaml')
         max_features = params['feature_engineering']['max_features']
         vectorizer = TfidfVectorizer(max_features = max_features)
-        x_train_precrossed = vectorizer.fit_transform(x_train)
-        x_test_precrossed = vectorizer.transform(x_test)
-        import joblib
+        x_train_processed = vectorizer.fit_transform(x_train)
+        x_test_processed = vectorizer.transform(x_test)
+        os.makedirs("models", exist_ok=True)
         joblib.dump(vectorizer, "models/tfidf_vectorizer.joblib")
-        return x_train_precrossed, x_test_precrossed
+        logger.info("TF-IDF vectorizer trained and saved.")
+        return x_train_processed,x_test_processed
+        
     except Exception as E:
         logger.exception('Raised an exception %s',E)
         raise
+    
 # -------------------saving the splits -------------------------------    
     
 def save_data(x_train, x_test, y_train, y_test):
-    """ save the splits and the vectorizer."""
+    """the processed data is saved here """
     try:
-        os.makedirs("data/processed", exist_ok=True)
-        os.makedirs("models", exist_ok=True)
-        np.save("data/processed/x_train.npy", x_train)
-        np.save("data/processed/x_test.npy", x_test)
-        np.save("data/processed/y_train.npy", y_train)
-        np.save("data/processed/y_test.npy", y_test)
-        logger.info("Artifacts saved:")
-        logger.info("  → data/processed/x_train.npy")
-        logger.info("  → data/processed/x_test.npy")
-        logger.info("  → data/processed/y_train.npy")
-        logger.info("  → data/processed/y_test.npy")
-        logger.info("  → models/tfidf_vectorizer.joblib")
+        os.makedirs("data_files/processed", exist_ok=True)
+        save_npz( "data_files/processed/x_train.npz", x_train.tocsr())
+        save_npz("data_files/processed/x_test.npz",x_test.tocsr())
+        np.save( "data_files/processed/y_train.npy", np.asarray(y_train))
+        np.save( "data_files/processed/y_test.npy",np.asarray(y_test))
+        logger.info("Processed artifacts saved successfully")
     except Exception as E:
-        logger.exception('Raised an exception %s',E)
+        logger.exception("Error while saving processed data: %s", E)
         raise
-    
-    
+
 def main():
     try:
         params = find_param('params.yaml')

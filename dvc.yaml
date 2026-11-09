@@ -1,0 +1,21 @@
+stages:
+  data_ingestion:
+    cmd: python src/data/ingestion.py
+    deps:
+    - data_files/raw/clickbait_title_classification.csv
+    - params.yaml
+    - src/data/ingestion.py
+    outs:
+    - data_files/processed/x_test.npz
+    - data_files/processed/x_train.npz
+    - data_files/processed/y_test.npy
+    - data_files/processed/y_train.npy
+    - models/tfidf_vectorizer.joblib
+  model_building:
+    cmd: python src/models/model_building.py
+    deps:
+    - data_files/processed
+    - params.yaml
+    - src/models/model_building.py
+    outs:
+    - models/clickbait_xgb.joblib
